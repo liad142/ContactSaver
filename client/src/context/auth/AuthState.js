@@ -13,9 +13,9 @@ import {
     LOGOUT,
     CLEAR_ERROR
 } from '../types'
-import contactReducer from "../contact/contactReducer";
 
 const AuthState = (props) => {
+    console.log(props)
     const initalState = {
         token: localStorage.getItem('token'),
         isAuthenticated: null,
@@ -27,12 +27,14 @@ const AuthState = (props) => {
     const [state, dispatch] = useReducer(authReducer, initalState)
 
 const loadUser = async () =>{
-        if(localStorage.token){
-            setAuthToken(localStorage.token)
-        }
+        setAuthToken(localStorage.token)
+
       try{
           const res = await axios.get('/api/auth')
-          dispatch({type:USER_LOADED,payload:res.data})
+          dispatch({
+              type:USER_LOADED,
+              payload:res.data
+          })
 
       }  catch (err){
           dispatch({type:AUTH_ERROR})
@@ -62,8 +64,8 @@ const register = async formData =>{
         }
 }
 //login user
-
     const login = async formData =>{
+        console.log(formData)
         const config = {
             headers:{
                 'Content-Type':'application/json'
@@ -75,7 +77,7 @@ const register = async formData =>{
                 type:LOGIN_SUCCESS,
                 payload:res.data //res.data זו התשובה וזה בעצם הטוקן ואותו אנחנו מעבירים בפיילואד
             })
-            await loadUser();
+           loadUser();
         }
         catch (err){
             dispatch({
@@ -86,6 +88,7 @@ const register = async formData =>{
     }
 
 //logout user
+const logout = () => dispatch({type:LOGOUT})
 
 //clear errors
     const clearErrors = () => dispatch({type:CLEAR_ERROR})
@@ -98,8 +101,7 @@ const register = async formData =>{
                 loading: state.loading,
                 error: state.error,
                 user: state.user,
-                register,clearErrors,loadUser,login
-                // ,loadUser
+                register,clearErrors,loadUser,login,logout
             }}
         >
             {props.children}

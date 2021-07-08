@@ -5,24 +5,35 @@ import {
     CLEAR_CURRENT,
     UPDATE_CONTACT,
     FILTER_CONTACT,
-    CLEAR_FILTER
+    CLEAR_FILTER,
+    CONTACT_ERROR,
+    GET_CONTACTS,
+    CLEAR_CONTACTS
 } from '../types'
 
 export default (state, action) => {
     switch (action.type) {
+        case GET_CONTACTS:
+            return {
+                ...state,
+                contacts: action.payload,
+                loading:false
+            }
         case ADD_CONTACT:
             return {
                 //מעתיק את מה שיש בסטייט כדי שלא יימחק
                 ...state,
                 // מעתיק את הסטייט הקיים ומוסיף את מה ששלחנו מהFORM
-                contacts: [...state.contacts, action.payload]
+                contacts: [...state.contacts, action.payload],
+                loading:false
             }
         case DELETE_CONTACT:
             return {
                 ...state,
                 //מעבירים מContactState את הID הספציפי שרוצים למחוק
                 //הפילטר יחזיר לנו את כל הCONTACTS חוץ מהקונטקט עם הID שבחרנו וכך הוא נמחק
-                contacts: state.contacts.filter(contact => contact.id !== action.payload)
+                contacts: state.contacts.filter(contact => contact.id !== action.payload),
+                loading:false
             }
         case SET_CURRENT:
             return {
@@ -39,7 +50,8 @@ export default (state, action) => {
                 ...state,
                 //במערך של הקונטקט אנחנו בודקים האם הCONATC ID והACTION PAYLOAD ID הם אותו אחד
                 // אם כן אז מחזירים את הACTION PAY LOAD המעודכן אחרי UPDATE אם לא מחזירים את CONTACT
-                contacts: state.contacts.map(contact => contact.id === action.payload.id ? action.payload : contact)
+                contacts: state.contacts.map(contact => contact.id === action.payload.id ? action.payload : contact),
+                loading:false
             }
         case FILTER_CONTACT:
             return {
@@ -57,6 +69,21 @@ export default (state, action) => {
                 ...state,
                 filteredContacts: null
             }
+
+        case CLEAR_CONTACTS:
+            return {
+                ...state,
+                contacts: null,
+                filteredContacts: null,
+                error:null,
+                current:null
+            }
+
+        case CONTACT_ERROR:
+            return {
+                ...state,
+                error:action.payload
+            };
 
 
         default:

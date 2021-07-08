@@ -25,11 +25,13 @@ router.get('/', auth, async (req, res) => {
 //@desc   auth user and get token
 //@access  public
 router.post('/',
+
     [
         check('email', 'please includ valid email').isEmail(),
         check('password', 'please enter password with 6 charcters').exists()
     ],
     async (req, res) => {
+        console.log(req.body)
         //בודק האם יש ERRORS
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -47,7 +49,6 @@ router.post('/',
             if (!isMatch) {
                 return res.status(400).json({msg: 'invaild credentials'})
             }
-
             const payload = {
                 user: {
                     id: user.id

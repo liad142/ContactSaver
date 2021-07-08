@@ -1,25 +1,32 @@
-import React, {useContext, Fragment} from 'react';
+import React, {useContext, Fragment, useEffect} from 'react';
 import {CSSTransition, TransitionGroup} from "react-transition-group";
 import ContactItem from "./ContactItem";
 import ContactContext from '../../context/contact/contactContext'
+import Spinner from "../layouts/Spinner";
 
 const Contacts = () => {
     //כשאני מייבא את הקונטקסא תהיה לי גישה לכל הסטייט ולכל האקשנים מהוטנטקסט כאן בתוך הקומפוננטה
     const contactContext = useContext(ContactContext)
-    const {contacts, filteredContacts} = contactContext
+    const {contacts, filteredContacts, getContacts, loading} = contactContext
 
-    if (contacts.length === 0) {
+    useEffect(() => {
+        getContacts()
+        //eslint-disable-next-line
+    }, [])
+
+    if (contacts!==null && contacts.length === 0 && !loading) {
         return <h4>Please add a new contact</h4>
     }
 
     return (
         <Fragment>
-            <TransitionGroup>
+            {/*בודק שקונטקנט הוא עם מידע בפנים ושזה לא LOADING אז מציג את הכול. אם הקונטקט ריק או LOADING עובד מציג את הספינר*/}
+            {contacts !== null && !loading ? (<TransitionGroup>
                 {/*בודק במערך של הפילטר האם יש משהו בפנים.*/}
                 {filteredContacts !== null
                     // אם יש משהו בתוך המערך אז עושה עליו לופ ומציג אותו
                     ? filteredContacts.map(contact => (
-                        <CSSTransition key={contact.id} timeout={500} classNames={'item'}>
+                        <CSSTransition key={contact._id} timeout={500} classNames={'item'}>
                             <ContactItem contact={contact}/>
                         </CSSTransition>
 
@@ -27,13 +34,15 @@ const Contacts = () => {
                     // אם אין כלום במערך אז מציג את הקונטקטס
                     :
                     contacts.map(contact => (
-                        <CSSTransition key={contact.id} timeout={500} classNames={'item'}>
+                        <CSSTransition key={contact._id} timeout={500} classNames={'item'}>
                             <ContactItem contact={contact}/>
                         </CSSTransition>
                     ))}
-            </TransitionGroup>
+            </TransitionGroup>) : <Spinner/>}
+
         </Fragment>
     );
-};
+}
+;
 
 export default Contacts;

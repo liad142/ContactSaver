@@ -14,16 +14,16 @@ const Login = (props) => {
         if(isAuthenticated){
             props.history.push('/') // בודק האם היוזר כבר מחובר . אם כן שולח אותו לדף HOME
         }
-        if(error==='invaild credentials'){
+        if(error ==='Invalid credentials'){
             setAlert(error,'danger')
             clearErrors()
         }
         //es-lint-disable-next-line
-    },[error,isAuthenticated,props.history])
+    },[error,isAuthenticated,props.history,clearErrors,setAlert])
 
     const [user,setUser] = useState({
         email:'',
-        password:'',
+        password:''
     })
 
     const {email,password} = user
@@ -32,6 +32,7 @@ const Login = (props) => {
         // e.target.name מתייחס ומסתכל על כל הNAME בתוך הפורם
         //e.target.value הוואליו של כל NAME
         // אנחנו בעצם מוסיפים לUSER את הערכים שנוספו
+
         setUser({...user,[e.target.name]:e.target.value})
     }
 
