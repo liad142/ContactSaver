@@ -23,8 +23,9 @@ export default (state, action) => {
             return {
                 //מעתיק את מה שיש בסטייט כדי שלא יימחק
                 ...state,
-                // מעתיק את הסטייט הקיים ומוסיף את מה ששלחנו מהFORM
-                contacts: [...state.contacts, action.payload],
+               //מוסיף את מה ששלחנו ומעתיק את מה שיש בסטייט
+                //כדי שכל הפריטים החדשים יהיו ראשונים אני שם את הPAYLOAD בהתחלה ואז מעתיק את שאר הסטייט
+                contacts: [action.payload , ...state.contacts ],
                 loading:false
             }
         case DELETE_CONTACT:
@@ -32,7 +33,7 @@ export default (state, action) => {
                 ...state,
                 //מעבירים מContactState את הID הספציפי שרוצים למחוק
                 //הפילטר יחזיר לנו את כל הCONTACTS חוץ מהקונטקט עם הID שבחרנו וכך הוא נמחק
-                contacts: state.contacts.filter(contact => contact.id !== action.payload),
+                contacts: state.contacts.filter(contact => contact._id !== action.payload),
                 loading:false
             }
         case SET_CURRENT:
@@ -50,7 +51,7 @@ export default (state, action) => {
                 ...state,
                 //במערך של הקונטקט אנחנו בודקים האם הCONATC ID והACTION PAYLOAD ID הם אותו אחד
                 // אם כן אז מחזירים את הACTION PAY LOAD המעודכן אחרי UPDATE אם לא מחזירים את CONTACT
-                contacts: state.contacts.map(contact => contact.id === action.payload.id ? action.payload : contact),
+                contacts: state.contacts.map(contact => contact._id === action.payload._id ? action.payload : contact),
                 loading:false
             }
         case FILTER_CONTACT:

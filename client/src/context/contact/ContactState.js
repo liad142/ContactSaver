@@ -21,7 +21,7 @@ const ContactState = props => {
         contacts: null,
         current: null,
         filteredContacts: null,
-        error:null
+        error: null
     };
     //הSTATE נותן לנו גישה לסטייט
     // הDISPATCH מאפשר לנו לשגר אובייקטים לREDUCER
@@ -29,7 +29,7 @@ const ContactState = props => {
 
 
     //Get contacts
-    const getContacts = async ()=> {
+    const getContacts = async () => {
         try {
             const res = await axios.get('/api/contacts')
 
@@ -74,10 +74,49 @@ const ContactState = props => {
     }
 
     //Delete contact
-    const deleteContact = (id) => {
-        //שולח לREDUCER את הTYPE ואת הדאטא שזה בעצם ה CONTACT
-        dispatch({type: DELETE_CONTACT, payload: id})
+    const deleteContact = async (id) => {
+        try {
+            await axios.delete(`/api/contacts/${id}`)
+
+            //שולח לREDUCER את הTYPE ואת הדאטא שזה בעצם ה CONTACT
+            dispatch({
+                type: DELETE_CONTACT,
+                payload: id
+            })
+        } catch (err) {
+            dispatch({
+                type: CONTACT_ERROR,
+                payload: err.response.msg
+            })
+        }
+
     }
+
+    //update contact
+    const updateContact = async contact => {
+        const config = {
+            headers: {
+                'Conteny-Type': 'application/js'
+            }
+        }
+        try {
+            const res = await axios.put(`/api/contacts/${contact._id}`, contact, config)
+
+            //שולח לREDUCER את הTYPE ואת הדאטא שזה בעצם ה res.data
+            dispatch({
+                type: UPDATE_CONTACT,
+                payload: res.data
+            })
+        } catch (err) {
+            dispatch({
+                type: CONTACT_ERROR,
+                payload: err.response.msg
+            })
+        }
+
+
+    }
+
     //set current contact
     const setCurrent = (contact) => {
         dispatch({type: SET_CURRENT, payload: contact})
@@ -87,10 +126,7 @@ const ContactState = props => {
     const clearCurrent = () => {
         dispatch({type: CLEAR_CURRENT})
     }
-    //update contact
-    const updateContact = (contact) => {
-        dispatch({type: UPDATE_CONTACT, payload: contact})
-    }
+
     //filter contacts
     const filterContacts = (text) => {
         dispatch({type: FILTER_CONTACT, payload: text})
@@ -101,8 +137,8 @@ const ContactState = props => {
     }
 
     //clear contacts
-    const clearContacts = () =>{
-        dispatch({type:CLEAR_CONTACTS})
+    const clearContacts = () => {
+        dispatch({type: CLEAR_CONTACTS})
     }
 
     return (
@@ -111,9 +147,9 @@ const ContactState = props => {
             contacts: state.contacts,
             current: state.current,
             filteredContacts: state.filteredContacts,
-            error:state.error,
+            error: state.error,
             addContact, deleteContact, updateContact, filterContacts,
-            setCurrent, clearCurrent, clearFilter,getContacts,clearContacts
+            setCurrent, clearCurrent, clearFilter, getContacts, clearContacts
 
         }}>
             {props.children}

@@ -15,7 +15,6 @@ import {
 } from '../types'
 
 const AuthState = (props) => {
-    console.log(props)
     const initalState = {
         token: localStorage.getItem('token'),
         isAuthenticated: null,
@@ -64,7 +63,7 @@ const register = async formData =>{
         }
 }
 //login user
-    const login = async formData =>{
+    const login = async formData => {
         console.log(formData)
         const config = {
             headers:{
@@ -77,7 +76,7 @@ const register = async formData =>{
                 type:LOGIN_SUCCESS,
                 payload:res.data //res.data זו התשובה וזה בעצם הטוקן ואותו אנחנו מעבירים בפיילואד
             })
-           loadUser();
+          await loadUser();
         }
         catch (err){
             dispatch({
